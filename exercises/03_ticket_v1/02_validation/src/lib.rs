@@ -4,7 +4,7 @@ struct Ticket {
     status: String,
 }
 
-fn is_valid_status(status: String) -> bool {
+fn is_valid_status(status: &String) -> bool {
     match status.as_str() {
         "To-Do" | "In Progress" | "Done" => {
             true
@@ -44,7 +44,7 @@ impl Ticket {
             "Description cannot be longer than 500 bytes",
         );
         assert!(
-            is_valid_status(status.clone()),
+            is_valid_status(&status),
             "Only `To-Do`, `In Progress`, and `Done` statuses are allowed",
         );
 
