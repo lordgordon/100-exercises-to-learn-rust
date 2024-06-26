@@ -1,8 +1,3 @@
-// TODO: Define a new trait, `Power`, that has a method `power` that raises `self`
-//  to the power of `n`.
-//  The trait definition and its implementations should be enough to get
-//  the tests to compile and pass.
-//
 // Recommendation: you may be tempted to write a generic implementation to handle
 // all cases at once. However, this is fairly complicated and requires the use of
 // additional crates (i.e. `num-traits`).
@@ -12,6 +7,43 @@
 // interested in learning more about it.
 // You don't have to though: it's perfectly okay to write three separate
 // implementations manually. Venture further only if you're curious.
+
+trait Power<Number> {
+    fn power(self, value: Number) -> u32;
+}
+
+impl Power<u32> for u32 {
+    fn power(self, value: u32) -> u32 {
+        if value == 0 {
+            1
+        } else if value == 1 {
+            self
+        } else {
+            self * self.power(value - 1)
+        }
+    }
+}
+
+impl Power<&u32> for u32 {
+    fn power(self, value: &u32) -> u32 {
+        self.power(*value)  // still don't know the exact semantic of * in Rust
+        /*if value == &0 {
+            1
+        } else if value == &1 {
+            self
+        } else {
+            self * self.power(value - 1)
+        }*/
+    }
+}
+
+impl Power<u16> for u32 {
+    fn power(self, value: u16) -> u32 {
+        self.power(u32::from(value))
+        // This is legit since u32 is bigger than u16, there is no data loss.
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
