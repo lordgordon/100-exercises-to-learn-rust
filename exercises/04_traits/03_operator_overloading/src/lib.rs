@@ -8,9 +8,26 @@ struct Ticket {
 
 impl PartialEq for Ticket {
     fn eq(&self, other: &Ticket) -> bool {
-        (self.title == other.title)
-            & (self.description == other.description)
-            & (self.status == other.status)
+        // Destructuring: it allows the compiler to fail when the struct changes.
+        let Ticket {
+            title,
+            description,
+            status,
+        } = self;
+        let Ticket {
+            title: other_title,
+            description: other_description,
+            status: other_status,
+        } = other;
+
+        (title == other_title)
+            && (description == other_description)
+            && (status == other_status)
+
+        // Original implementation:
+        /*(self.title == other.title)
+            && (self.description == other.description)
+            && (self.status == other.status)*/
     }
 }
 
