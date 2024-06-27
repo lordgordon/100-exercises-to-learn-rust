@@ -27,13 +27,6 @@ impl Power<&u32> for u32 {
 impl Power<u32> for u32 {
     fn power(self, value: u32) -> u32 {
         self.power(&value)
-        /*if value == &0 {
-            1
-        } else if value == &1 {
-            self
-        } else {
-            self * self.power(value - 1)
-        }*/
     }
 }
 
