@@ -12,11 +12,11 @@ trait Power<Number> {
     fn power(self, value: Number) -> u32;
 }
 
-impl Power<u32> for u32 {
-    fn power(self, value: u32) -> u32 {
-        if value == 0 {
+impl Power<&u32> for u32 {
+    fn power(self, value: &u32) -> u32 {
+        if value == &0 {
             1
-        } else if value == 1 {
+        } else if value == &1 {
             self
         } else {
             self * self.power(value - 1)
@@ -24,9 +24,9 @@ impl Power<u32> for u32 {
     }
 }
 
-impl Power<&u32> for u32 {
-    fn power(self, value: &u32) -> u32 {
-        self.power(*value)  // still don't know the exact semantic of * in Rust
+impl Power<u32> for u32 {
+    fn power(self, value: u32) -> u32 {
+        self.power(&value)
         /*if value == &0 {
             1
         } else if value == &1 {
@@ -39,7 +39,7 @@ impl Power<&u32> for u32 {
 
 impl Power<u16> for u32 {
     fn power(self, value: u16) -> u32 {
-        self.power(u32::from(value))
+        self.power(&u32::from(value))
         // This is legit since u32 is bigger than u16, there is no data loss.
     }
 }
