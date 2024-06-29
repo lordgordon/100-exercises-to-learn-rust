@@ -25,7 +25,7 @@ pub enum TicketNewError {
         #[from]
         inner: ParseStatusError,
     },
-    /* Alternative implementation 
+    /* Alternative implementation
     #[error("{0}")]
     InvalidStatus(#[from] ParseStatusError),
     */
