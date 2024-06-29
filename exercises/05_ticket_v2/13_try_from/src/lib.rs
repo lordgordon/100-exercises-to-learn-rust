@@ -5,6 +5,19 @@ enum StatusError {
     StatusConversionError(String),
 }
 
+/* Alternative solution (complete):
+#[derive(Debug, thiserror::Error)]
+#[error("{invalid_status} is not a valid status")]
+struct ParseStatusError {
+    invalid_status: String,
+}
+
+And you use like:
+Err(ParseStatusError {
+    invalid_status: value.to_string(),
+})
+*/
+
 #[derive(Debug, PartialEq, Clone)]
 enum Status {
     ToDo,
