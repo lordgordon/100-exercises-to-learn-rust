@@ -1,5 +1,3 @@
-use std::fmt::Error;
-
 #[derive(Debug, PartialEq)]
 struct Ticket {
     title: String,
