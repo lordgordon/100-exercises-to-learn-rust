@@ -6,8 +6,7 @@ fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
             Ticket::new(title, "Description not provided".into(), status).unwrap()
         },
         Err(error) => {
-            panic!("{}", error.as_str())
-            // panic! wants a string literal, we need to format it
+            panic!("{error}") // panic! wants a string literal, we need to format it
         },
         /*Err(error) => {
             match error.as_str() {
