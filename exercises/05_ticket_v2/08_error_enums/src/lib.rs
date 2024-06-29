@@ -1,9 +1,7 @@
 #[derive(Debug)]
 enum TicketNewError {
-    TitleIsEmpty { reason: String },
-    TitleIsTooLong { reason: String },
-    DescriptionIsEmpty { reason: String },
-    DescriptionIsTooLong { reason: String },
+    TitleError(String),
+    DescriptionError(String),
 }
 
 fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
@@ -12,24 +10,14 @@ fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
         Ok(ticket) => ticket,
         Err(error) => {
             match error {
-                TicketNewError::DescriptionIsEmpty { reason: _ } |
-                TicketNewError::DescriptionIsTooLong { reason: _ } => {
+                TicketNewError::DescriptionError(_) => {
                     Ticket::new(title, "Description not provided".into(), status).unwrap()
                 },
-                TicketNewError::TitleIsTooLong { reason }
-                | TicketNewError::TitleIsEmpty { reason } => {
-                    panic!("{}", reason.as_str())
+                TicketNewError::TitleError(reason) => {
+                    panic!("{reason}")
                 },
-                //TicketNewError {}} => "",
             }
         },
-        /*Err(error) if error.starts_with("Description") => {
-            Ticket::new(title, "Description not provided".into(), status).unwrap()
-        },
-        Err(error) => {
-            panic!("{}", error.as_str())
-            // panic! wants a string literal, we need to format it
-        },*/
     }
 }
 
@@ -55,30 +43,22 @@ impl Ticket {
     ) -> Result<Ticket, TicketNewError> {
         if title.is_empty() {
             return Err(
-                TicketNewError::TitleIsEmpty {
-                    reason: "Title cannot be empty".to_string()
-                }
+                TicketNewError::TitleError("Title cannot be empty".to_string())
             );
         }
         if title.len() > 50 {
             return Err(
-                TicketNewError::TitleIsTooLong {
-                    reason: "Title cannot be longer than 50 bytes".to_string()
-                }
+                TicketNewError::TitleError("Title cannot be longer than 50 bytes".to_string())
             );
         }
         if description.is_empty() {
             return Err(
-                TicketNewError::DescriptionIsEmpty {
-                    reason: "Description cannot be empty".to_string()
-                }
+                TicketNewError::DescriptionError("Description cannot be empty".to_string())
             );
         }
         if description.len() > 500 {
             return Err(
-                TicketNewError::DescriptionIsTooLong {
-                    reason: "Description cannot be longer than 500 bytes".to_string()
-                }
+                TicketNewError::DescriptionError("Description cannot be longer than 500 bytes".to_string())
             );
         }
 
