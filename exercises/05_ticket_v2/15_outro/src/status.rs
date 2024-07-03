@@ -14,6 +14,13 @@ pub struct ParseStatusError {
     message: String,
 }
 
+/* BETTER
+#[derive(Debug, thiserror::Error)]
+#[error("`{invalid_status}` is not a valid status. Use one of: ToDo, InProgress, Done")]
+pub struct ParseStatusError {
+    invalid_status: String,
+}
+*/
 impl TryFrom<&str> for Status {
     type Error = ParseStatusError;
 

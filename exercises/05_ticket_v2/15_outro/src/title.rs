@@ -11,6 +11,16 @@ pub struct InvalidTicketTitle {
     message: String,
 }
 
+/* BETTER
+#[derive(Debug, thiserror::Error)]
+pub enum TicketTitleError {
+    #[error("The title cannot be empty")]
+    Empty,
+    #[error("The title cannot be longer than 50 bytes")]
+    TooLong,
+}
+*/
+
 impl TryFrom<&str> for TicketTitle {
     type Error = InvalidTicketTitle;
 

@@ -11,6 +11,16 @@ pub struct InvalidTicketDescription {
     message: String,
 }
 
+/* BETTER:
+#[derive(Debug, thiserror::Error)]
+pub enum TicketDescriptionError {
+    #[error("The description cannot be empty")]
+    Empty,
+    #[error("The description cannot be longer than 500 bytes")]
+    TooLong,
+}
+*/
+
 impl TryFrom<&str> for TicketDescription {
     type Error = InvalidTicketDescription;
 
