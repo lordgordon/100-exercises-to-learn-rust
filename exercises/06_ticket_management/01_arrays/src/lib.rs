@@ -15,8 +15,8 @@ pub enum Weekday {
 
 enum WeekdayIndexError {}
 
-impl From<Weekday> for usize {
-    fn from(value: Weekday) -> Self {
+impl From<&Weekday> for usize {
+    fn from(value: &Weekday) -> Self {
         match value {
             Weekday::Monday => 0,
             Weekday::Tuesday => 1,
@@ -32,16 +32,16 @@ impl From<Weekday> for usize {
 impl WeekTemperatures {
     pub fn new() -> Self {
         Self {
-            temperatures: [None, None, None, None, None, None, None],
+            temperatures: [None; 7],
         }
     }
 
     pub fn get_temperature(&self, day: Weekday) -> Option<i32> {
-        self.temperatures[usize::from(day)]
+        self.temperatures[usize::from(&day)]
     }
 
     pub fn set_temperature(&mut self, day: Weekday, temperature: i32) {
-        self.temperatures[usize::from(day)] = Some(temperature)
+        self.temperatures[usize::from(&day)] = Some(temperature)
     }
 }
 
