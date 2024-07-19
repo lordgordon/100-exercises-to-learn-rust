@@ -56,10 +56,14 @@ impl TicketStore {
     }
 
     pub fn get(&self, id: TicketId) -> Option<&Ticket> {
-        match usize::try_from(id.0) {
+        // A better solution (more flexible to future changes):
+        self.tickets.iter().find(|ticket| ticket.id == id)
+
+        // A naive implementation using the Vec index (but doesn't work if we implement deletions)
+        /*match usize::try_from(id.0) {
             Ok(value) => self.tickets.get(value),
             _ => None
-        }
+        }*/
     }
 }
 
