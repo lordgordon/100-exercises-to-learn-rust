@@ -8,7 +8,7 @@ use std::thread::JoinHandle;
 
 pub fn sum(v: Vec<i32>) -> i32 {
     let sliced = v.leak();
-    
+
     let half = sliced.len() / 2;
     let (h1, h2) = sliced.split_at(half);
 
