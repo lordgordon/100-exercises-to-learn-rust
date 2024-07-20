@@ -17,14 +17,15 @@ use std::thread::JoinHandle;
 
 pub fn sum(v: Vec<i32>) -> i32 {
     let half_size = v.len() / 2;
-    let h1: Vec<i32> = v[0..half_size].to_vec();
-    let h2: Vec<i32> = v[half_size..].to_vec();
+    let (v1, v2) = v.split_at(half_size);
+    let h1 = v1.to_vec();
+    let h2 = v2.to_vec();
 
     let thread_h1:JoinHandle<i32> = thread::spawn(move || {
-        h1.iter().sum()
+        h1.iter().sum::<i32>()
     });
     let thread_h2:JoinHandle<i32> = thread::spawn(move || {
-        h2.iter().sum()
+        h2.iter().sum::<i32>()
     });
 
     thread_h1.join().unwrap() + thread_h2.join().unwrap()
