@@ -62,16 +62,16 @@ impl TicketStore {
 impl Index<&TicketId> for TicketStore {
     type Output = Ticket;
 
-    fn index(&self, index: &TicketId) -> &Self::Output {
-        self.get(index.clone()).unwrap()
+    fn index(&self, id: &TicketId) -> &Self::Output {
+        self.get(id.clone()).unwrap()
     }
 }
 
 impl Index<TicketId> for TicketStore {
     type Output = Ticket;
 
-    fn index(&self, index: TicketId) -> &Self::Output {
-        self.index(&index)
+    fn index(&self, id: TicketId) -> &Self::Output {
+        &self[&id]
     }
 }
 
