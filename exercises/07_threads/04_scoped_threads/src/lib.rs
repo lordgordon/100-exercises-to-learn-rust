@@ -5,14 +5,15 @@
 use std::thread;
 
 pub fn sum(v: Vec<i32>) -> i32 {
-    let half = v.len() / 2;
+    let mid = v.len() / 2;
+    let (left, right) = v.split_at(mid);
 
     thread::scope(|scope| {
         let h1 = scope.spawn(|| {
-            v[0..half].iter().sum::<i32>()
+            left.iter().sum::<i32>()
         });
         let h2 = scope.spawn(|| {
-            v[half..].iter().sum::<i32>()
+            right.iter().sum::<i32>()
         });
 
         h1.join().unwrap() + h2.join().unwrap()
