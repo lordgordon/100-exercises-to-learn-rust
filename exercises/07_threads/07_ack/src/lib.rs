@@ -13,7 +13,7 @@ pub enum Command {
     },
     Get {
         id: TicketId,
-        response_sender: Sender<Ticket>,
+        response_sender: Sender<Option<Ticket>>,
     }
 }
 
@@ -33,8 +33,8 @@ pub fn server(receiver: Receiver<Command>) {
                 result.unwrap();
             }
             Ok(Command::Get{id, response_sender}) => {
-                let ticket = store.get(id).unwrap();
-                let result = response_sender.send(ticket.clone());
+                let ticket = store.get(id);
+                let result = response_sender.send(ticket.cloned());
                 result.unwrap();
             }
             Err(_) => {
