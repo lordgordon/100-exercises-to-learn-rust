@@ -1437,6 +1437,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "patch_v2"
+version = "0.1.0"
+dependencies = [
+ "thiserror",
+ "ticket_fields",
+]
+
+[[package]]
 name = "pathdiff"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
