@@ -33,7 +33,7 @@ where
     }
 }
 
-// Alternative solution
+// Alternative solution. But look at 06_async_aware_primitives for better examples
 /*pub async fn single_reply<T>(listener: TcpListener, reply_reference: Arc<RwLock<T>>)
 where
     T: Display + Send + Sync + 'static,
