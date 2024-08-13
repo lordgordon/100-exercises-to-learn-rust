@@ -1,7 +1,8 @@
-// TODO: Implement the `fixed_reply` function. It should accept two `TcpListener` instances,
+// Implement the `fixed_reply` function. It should accept two `TcpListener` instances,
 //  accept connections on both of them concurrently, and always reply clients by sending
 //  the `Display` representation of the `reply` argument as a response.
 use std::fmt::Display;
+use std::sync::{Arc, RwLock};
 use tokio::io::AsyncWriteExt;
 use tokio::net::TcpListener;
 
@@ -10,7 +11,33 @@ where
     // `T` cannot be cloned. How do you share it between the two server tasks?
     T: Display + Send + Sync + 'static,
 {
-    todo!()
+    let shared_reply_reference = Arc::new(RwLock::new(reply));
+    let handle_first = tokio::spawn(single_reply(first, shared_reply_reference.clone()));
+    let handle_second = tokio::spawn(single_reply(second, shared_reply_reference.clone()));
+
+    let (outcome1, outcome2) = tokio::join!(handle_first, handle_second);
+    let _ = outcome1.unwrap();
+    let _ = outcome2.unwrap();
+}
+
+pub async fn single_reply<T>(listener: TcpListener, reply_reference: Arc<RwLock<T>>)
+where
+    T: Display + Send + Sync + 'static,
+{
+    loop {
+        let (mut socket, _) = listener.accept().await.unwrap();
+        let handle_reference = reply_reference.clone(); // needed to move into the following spawn
+
+        tokio::spawn(async move {
+            let (mut _reader, mut writer) = socket.split();
+            let cloned_reference;
+            {
+                // the lock lives only in this scope, but cloned_reference outlives the lock
+                cloned_reference = handle_reference.read().unwrap().to_string().clone();
+            }
+            writer.write_all(cloned_reference.as_bytes()).await.unwrap();
+        });
+    }
 }
 
 #[cfg(test)]
