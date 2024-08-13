@@ -2,7 +2,7 @@
 //  accept connections on both of them concurrently, and always reply clients by sending
 //  the `Display` representation of the `reply` argument as a response.
 use std::fmt::Display;
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 use tokio::io::AsyncWriteExt;
 use tokio::net::TcpListener;
 
@@ -11,16 +11,30 @@ where
     // `T` cannot be cloned. How do you share it between the two server tasks?
     T: Display + Send + Sync + 'static,
 {
-    let shared_reply_reference = Arc::new(RwLock::new(reply));
-    let handle_first = tokio::spawn(single_reply(first, shared_reply_reference.clone()));
-    let handle_second = tokio::spawn(single_reply(second, shared_reply_reference.clone()));
+    let shared_reply_reference = Arc::new(reply);
+    // with the alternative solution: let shared_reply_reference = Arc::new(RwLock::new(reply));
+    let handle_first = tokio::spawn(_fixed_reply(first, shared_reply_reference.clone()));
+    let handle_second = tokio::spawn(_fixed_reply(second, shared_reply_reference.clone()));
 
-    let (outcome1, outcome2) = tokio::join!(handle_first, handle_second);
-    let _ = outcome1.unwrap();
-    let _ = outcome2.unwrap();
+    tokio::join!(handle_first, handle_second);
 }
 
-pub async fn single_reply<T>(listener: TcpListener, reply_reference: Arc<RwLock<T>>)
+async fn _fixed_reply<T>(listener: TcpListener, reply: Arc<T>)
+where
+    T: Display + Send + Sync + 'static,
+{
+    loop {
+        let (mut socket, _) = listener.accept().await.unwrap();
+        let (mut _reader, mut writer) = socket.split();
+        writer
+            .write_all(format!("{}", reply).as_bytes())
+            .await
+            .unwrap();
+    }
+}
+
+// Alternative solution
+/*pub async fn single_reply<T>(listener: TcpListener, reply_reference: Arc<RwLock<T>>)
 where
     T: Display + Send + Sync + 'static,
 {
@@ -38,7 +52,7 @@ where
             writer.write_all(cloned_reference.as_bytes()).await.unwrap();
         });
     }
-}
+}*/
 
 #[cfg(test)]
 mod tests {
